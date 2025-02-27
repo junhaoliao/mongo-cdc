@@ -41,7 +41,7 @@ setInterval(() => {
 
 // collectionName: string -> { 
 //     collectionWatcher: WatcherObject,
-//     callbacks: ChangeCallbackFunc[], // may another Map: clientName -> ChangeCallbackFunc
+//     callbacks: ChangeCallbackFunc[], // instead, maybe a Map: clientName -> ChangeCallbackFunc
 // }
 const watches = new Map();
 
