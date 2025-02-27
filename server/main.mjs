@@ -39,6 +39,10 @@ setInterval(() => {
     }).catch(console.error);
 }, 1000);
 
+// collectionName: string -> { 
+//     collectionWatcher: WatcherObject,
+//     callbacks: ChangeCallbackFunc[], // may another Map: clientName -> ChangeCallbackFunc
+// }
 const watches = new Map();
 
 collection.watch().on("change", (change) => {
