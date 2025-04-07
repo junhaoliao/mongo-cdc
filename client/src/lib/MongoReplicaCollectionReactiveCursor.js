@@ -2,21 +2,19 @@ import MongoReplicaCollectionCursor from "./MongoReplicaCollectionCursor.js";
 
 class MongoReplicaCollectionReactiveCursor extends MongoReplicaCollectionCursor {
     /**
-     * @type {Set<{onData: Function, onError: Function}>}
+     * @type {{onData: Function, onError: Function}}
      */
-    #listeners;
+    #listener;
 
     constructor (props) {
         super(props);
 
-        this.#listeners = new Set();
-
         this.socket.on("collection::find::update", (response) => {
             if (response.error) {
-                return this.#listeners.forEach(({onError}) => onError(response.error));
+                return this.#listener.onError(response.error);
             }
 
-            return this.#listeners.forEach(({onData}) => onData(response.data));
+            return this.#listener.onData(response.data);
         });
     }
 
@@ -38,7 +36,7 @@ class MongoReplicaCollectionReactiveCursor extends MongoReplicaCollectionCursor 
 
             ({queryHash} = response);
 
-            return this.#listeners.add(callback);
+            this.#listener = callback;
         });
 
         return () => {
@@ -48,7 +46,7 @@ class MongoReplicaCollectionReactiveCursor extends MongoReplicaCollectionCursor 
                 queryHash: queryHash,
             });
 
-            this.#listeners.delete(callback);
+            this.socket.off("collection::find::update");
         };
     }
 }

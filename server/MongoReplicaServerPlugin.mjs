@@ -83,15 +83,16 @@ class MongoReplicaServerCollection {
     getWatcher (query, options) {
         const queryHash = getQueryHash(query, options);
 
-        if (false === this.#watchers.has(queryHash)) {
-            const changeStream = this.#collection.watch({
+        let watcher = this.#watchers.get(queryHash);
+        if ("undefined" === typeof watcher) {
+            watcher = this.#collection.watch({
                 $match: query,
             });
 
-            this.#watchers.set(queryHash, changeStream);
+            this.#watchers.set(queryHash, watcher);
         }
 
-        return queryHash;
+        return {queryHash, watcher};
     }
 
     removeWatcher (queryHash) {
@@ -184,8 +185,13 @@ class MongoReplicaServer {
                         });
                     }
 
-                    const queryHash = collection.getWatcher(query, options);
+                    const {queryHash, watcher} = collection.getWatcher(query, options);
                     callback({queryHash});
+                    watcher.on("change", async (change) => {
+                        socket.emit("collection::find::update", {
+                            data: await collection.find(query, options).toArray(),
+                        });
+                    });
 
                     socket.emit("collection::find::update", {
                         data: await collection.find(query, options).toArray(),

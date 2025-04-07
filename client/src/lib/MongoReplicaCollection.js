@@ -15,7 +15,8 @@ class MongoReplicaCollection {
         });
     }
 
-    find (query, options) {
+    // TODO: add support for non-reactive cursors
+    find (query, options = {}) {
         return new MongoReplicaCollectionReactiveCursor({
             options: options,
             query: query,

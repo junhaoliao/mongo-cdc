@@ -6,6 +6,7 @@ import {defineConfig} from "vite";
 export default defineConfig({
     plugins: [react()],
     server: {
+        host: "0.0.0.0",
         proxy: {
             "/socket.io/": {
                 target: "http://localhost:5000/socket.io/",
