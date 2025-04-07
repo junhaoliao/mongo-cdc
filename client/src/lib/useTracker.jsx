@@ -17,7 +17,9 @@ const useTracker = (getCursor, dependencies = []) => {
     useEffect(() => {
         const cursor = getCursor();
 
-        const handleData = (newData) => setData(newData);
+        const handleData = (newData) => {
+            setData(newData);
+        };
 
         const unsubscribe = cursor.toReactiveArray({
             onData: handleData,
