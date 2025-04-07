@@ -188,6 +188,7 @@ class MongoReplicaServer {
                     const {queryHash, watcher} = collection.getWatcher(query, options);
                     callback({queryHash});
                     watcher.on("change", async (change) => {
+                        // FIXME: this should be debounced
                         socket.emit("collection::find::update", {
                             data: await collection.find(query, options).toArray(),
                         });
