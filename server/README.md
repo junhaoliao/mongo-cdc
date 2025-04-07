@@ -18,7 +18,7 @@ mkdir data
 mongod --replSet rs0  --dbpath data
 ```
 
-## Start the Fastify + Socket.io server
+## Start the Fastify + Socket.io server in Debug Mode (auto-refresh)
 ```shell
-npm run start
+npm run dev
 ```
